@@ -1,3 +1,6 @@
+// Variables used by Scriptable.
+// These must be at the very top of the file. Do not edit.
+// icon-color: deep-blue; icon-glyph: magic;
 /*=========================================================
  * WIDGET CONFIGURATIONS
  ========================================================*/
@@ -7,7 +10,7 @@ const WIDGET_CONFIGURATIONS = {
   // If this is true, it opens a prompt to select a 
   // background image from the photo gallery,
   // when the widget is run from the Scriptable app
-  useBackgroundImage: true,
+  useBackgroundImage: false,
 
   // If useBackgroundImage is set to false, this background
   // color gradient will be use. Feel free to set to your
@@ -21,7 +24,7 @@ const WIDGET_CONFIGURATIONS = {
   font: 'Menlo-Bold',
 
   // The font size to use for the words in the word clock
-  fontSize: 14,
+  fontSize: 12,
 
   // The color to use for the "highlighted" words.
   // The "highlighted" words tells the time
@@ -41,11 +44,11 @@ const WIDGET_CONFIGURATIONS = {
   textAlphaBackground: 0.5,
 
   // The spacing between the lines of words of the clock
-  spacingBetweenLines: 4,
+  spacingBetweenLines: 0.5,
   
   // The spacing between each individual word, within the
   // same line
-  spacingBetweenWords: 8,
+  spacingBetweenWords: 3,
 }
 
 /*=========================================================
@@ -58,14 +61,14 @@ const WIDGET_CONFIGURATIONS = {
  * accordingly.
  */ 
 const TIME_WORDS_MATRIX = [
-  ['IT', 'IS', 'HALF', 'TEN'],
-  ['QUARTER', 'TWENTY'],
-  ['FIVE', 'MINUTES', 'TO'],
-  ['PAST', 'TWO', 'THREE'],
-  ['ONE', 'FOUR', 'FIVE'],
-  ['SIX', 'SEVEN', 'EIGHT'],
-  ['NINE', 'TEN', 'ELEVEN'],
-  ['TWELVE', 'O\'CLOCK'],
+  ['ES', 'ISCH'],
+  ['DREI', 'VIERDL'],
+  ['ZEHN', 'FÜNF', 'NACH'],
+  ['VOR', 'HALB', 'FÜNFE'],
+  ['OIS', 'SECHSE', 'ELFE'],
+  ['ZWOI', 'ACHDE', 'DREIE'],
+  ['ZWÖLFE', 'ZEHNE', 'NEUNE'],
+  ['SIEBNE', 'VIERE'],
 ];
 
 const widget = new ListWidget();
@@ -143,82 +146,81 @@ function getHighlightedWords() {
   // The dimensions of this should match the dimensions of
   // TIME_WORDS_MATRIX
   const defaultHighlights = [
-    [true, true, false, false],
+    [true, true],
     [false, false],
     [false, false, false],
     [false, false, false],
     [false, false, false],
     [false, false, false],
     [false, false, false],
-    [false, true],
+    [false, false],
   ];
 
   const date = new Date();
   let hour = date.getHours();
   const minute = date.getMinutes();
 
-  if (minute <= 30) {
-    // highlight "past"
-    defaultHighlights[3][0] = true;
-  } else {
-    // highlight "to"
+  if (minute <= 15) {
+    // highlight "nach"
     defaultHighlights[2][2] = true;
+  } else if (minute >15 && minute<30) {
+    // highlight "vor"
+    defaultHighlights[3][0] = true;
+    // increment hour
+    hour = hour + 1;
+  } else if (minute>30 && minute<45) {
+       // highlight "nach"
+    defaultHighlights[2][2] = true;
+    // increment hour
+    hour = hour + 1;
+  } else if (minute>50 && minute<=59) {
+       // highlight "vor
+    defaultHighlights[3][0] = true;
     // increment hour
     hour = hour + 1;
   }
 
  if (minute >= 5 && minute < 10) {
-    // highlight "five"
-    defaultHighlights[2][0] = true;
-    // highlight "minutes"
+    // highlight "fünf"
     defaultHighlights[2][1] = true;
   } else if (minute >= 10 && minute < 15) {
-    // highlight "ten"
-    defaultHighlights[0][3] = true;
-    // highlight "minutes"
-    defaultHighlights[2][1] = true;
-  } else if (minute >= 15 && minute < 20) {
-    // highlight "quarter"
-    defaultHighlights[1][0] = true;
-  } else if (minute >= 20 && minute < 25) {
-    // highlight "twenty"
-    defaultHighlights[1][1] = true;
-    // highlight "minutes"
-    defaultHighlights[2][1] = true;
-  } else if (minute >= 25 && minute < 30) {
-    // highlight "twenty"
-    defaultHighlights[1][1] = true;
-    // highlight "five"
+    // highlight "zehn"
     defaultHighlights[2][0] = true;
-    // highlight "minutes"
+  } else if (minute >= 15 && minute < 20) {
+    // highlight "viertl"
+    defaultHighlights[1][1] = true;
+  } else if (minute >= 20 && minute < 25) {
+    // highlight "zehn"
+    defaultHighlights[2][0] = true;
+    // highlight "halb"
+    defaultHighlights[3][1] = true;
+  } else if (minute >= 25 && minute < 30) {
+    // highlight "fünf"
     defaultHighlights[2][1] = true;
+    // highlight "halb"
+    defaultHighlights[3][1] = true;
   } else if (minute >= 30 && minute < 35) {
     // highlight "half"
-    defaultHighlights[0][2] = true;
+    defaultHighlights[3][1] = true;
   } else if (minute >= 35 && minute < 40) {
-    // highlight "twenty"
-    defaultHighlights[1][1] = true;
-    // highlight "five"
-    defaultHighlights[2][0] = true;
-    // highlight "minutes"
+    // highlight "fünf"
     defaultHighlights[2][1] = true;
+    // highlight "halb"
+    defaultHighlights[3][1] = true;
   } else if (minute >= 40 && minute < 45) {
-    // highlight "twenty"
-    defaultHighlights[1][1] = true;
-    // highlight "minutes"
-    defaultHighlights[2][1] = true;
-  } else if (minute >= 45 && minute < 50) {
-    // highlight "quarter"
-    defaultHighlights[1][0] = true;
-  } else if (minute >= 50 && minute < 55) {
-    // highlight "ten"
-    defaultHighlights[0][3] = true;
-    // highlight "minutes"
-    defaultHighlights[2][1] = true;
-  } else if (minute >= 55) {
-    // highlight "five"
+    // highlight "zehn"
     defaultHighlights[2][0] = true;
-    // highlight "minutes"
+    // highlight "halb"
+    defaultHighlights[3][1] = true;
+  } else if (minute >= 45 && minute < 50) {
+    // highlight "dreiviertel"
+    defaultHighlights[1][0] = true;
+    defaultHighlights[1][1] = true;
+  } else if (minute >= 50 && minute < 55) {
+    // highlight "zehn"
+    defaultHighlights[2][0] = true;
+  } else if (minute >= 55) {
+    // highlight "fünf"
     defaultHighlights[2][1] = true;
   }
   
@@ -229,27 +231,27 @@ function getHighlightedWords() {
   if (hour === 1) {
     defaultHighlights[4][0] = true;
   } else if (hour === 2) {
-    defaultHighlights[3][1] = true;
-  } else if (hour === 3) {
-    defaultHighlights[3][2] = true;
-  } else if (hour === 4) {
-    defaultHighlights[4][1] = true;
-  } else if (hour === 5) {
-    defaultHighlights[4][2] = true;
-  } else if (hour === 6) {
     defaultHighlights[5][0] = true;
-  } else if (hour === 7) {
-    defaultHighlights[5][1] = true;
-  } else if (hour === 8) {
+  } else if (hour === 3) {
     defaultHighlights[5][2] = true;
+  } else if (hour === 4) {
+    defaultHighlights[7][1] = true;
+  } else if (hour === 5) {
+    defaultHighlights[3][2] = true;
+  } else if (hour === 6) {
+    defaultHighlights[4][1] = true;
+  } else if (hour === 7) {
+    defaultHighlights[7][0] = true;
+  } else if (hour === 8) {
+    defaultHighlights[5][1] = true;
   } else if (hour === 9) {
-    defaultHighlights[6][0] = true;
+    defaultHighlights[6][2] = true;
   } else if (hour === 10) {
     defaultHighlights[6][1] = true;
   } else if (hour === 11) {
-    defaultHighlights[6][2] = true;
+    defaultHighlights[4][2] = true;
   } else if (hour === 12) {
-    defaultHighlights[7][0] = true;
+    defaultHighlights[6][0] = true;
   } 
 
   return defaultHighlights;
