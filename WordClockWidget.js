@@ -160,21 +160,27 @@ function getHighlightedWords() {
   let hour = date.getHours();
   const minute = date.getMinutes();
 
-  if (minute <= 15) {
+  if (minute>=5 &&  minute<20) {
     // highlight "nach"
     defaultHighlights[2][2] = true;
-  } else if (minute >15 && minute<30) {
+  } else if (minute >=20 && minute<30) {
     // highlight "vor"
     defaultHighlights[3][0] = true;
     // increment hour
     hour = hour + 1;
-  } else if (minute>30 && minute<45) {
+  } else if (minute>=30 && minute<35) {
+    // increment hour
+    hour = hour + 1;
+  } else if (minute>35 && minute<45) {
        // highlight "nach"
     defaultHighlights[2][2] = true;
     // increment hour
     hour = hour + 1;
+    } else if (minute>=45 && minute<50) {
+    // increment hour
+    hour = hour + 1;
   } else if (minute>50 && minute<=59) {
-       // highlight "vor
+       // highlight "vor"
     defaultHighlights[3][0] = true;
     // increment hour
     hour = hour + 1;
